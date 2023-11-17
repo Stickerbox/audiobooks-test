@@ -61,6 +61,7 @@ dependencies {
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.toolingPreview)
     implementation(libs.androidx.compose.material)
+    implementation(libs.coil.compose)
 
     implementation(libs.koin.android)
     implementation(libs.koin.core)

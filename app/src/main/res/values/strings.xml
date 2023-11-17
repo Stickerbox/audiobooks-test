@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">audiobooks-test</string>
+    <string name="podcasts_title">Podcasts</string>
 </resources>
