@@ -1,6 +1,7 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -66,6 +67,13 @@ dependencies {
     implementation(libs.koin.android)
     implementation(libs.koin.core)
     implementation(libs.koin.androidx.compose.navigation)
+
+    implementation(libs.moshi.base)
+    implementation(libs.moshi.converter)
+    implementation(libs.retrofit)
+    implementation(libs.okhttp)
+
+    ksp(libs.moshi.codegen)
 
     coreLibraryDesugaring(libs.desugar.jdk.libs)
 
