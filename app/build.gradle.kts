@@ -67,6 +67,7 @@ dependencies {
     implementation(libs.koin.android)
     implementation(libs.koin.core)
     implementation(libs.koin.androidx.compose.navigation)
+    implementation(libs.koin.annotations)
 
     implementation(libs.moshi.base)
     implementation(libs.moshi.converter)
@@ -74,6 +75,7 @@ dependencies {
     implementation(libs.okhttp)
 
     ksp(libs.moshi.codegen)
+    ksp(libs.koin.codegen)
 
     coreLibraryDesugaring(libs.desugar.jdk.libs)
 

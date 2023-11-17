@@ -16,7 +16,7 @@ import com.stickebox.audiobooks_test.models.Podcast
 import androidx.compose.foundation.lazy.items
 
 @Composable
-fun PodcastScreen(modifier: Modifier = Modifier, podcasts: List<Podcast>) {
+fun PodcastListScreen(modifier: Modifier = Modifier, podcasts: List<Podcast>) {
     Column {
         Text(text = stringResource(R.string.podcasts_title))
         PodcastList(podcasts = podcasts)
@@ -24,7 +24,7 @@ fun PodcastScreen(modifier: Modifier = Modifier, podcasts: List<Podcast>) {
 }
 
 @Composable
-fun PodcastList(modifier: Modifier = Modifier, podcasts: List<Podcast>) {
+private fun PodcastList(modifier: Modifier = Modifier, podcasts: List<Podcast>) {
     LazyColumn(modifier = modifier) {
         items(podcasts) { podcast ->
             key(podcast.id) {
@@ -35,7 +35,7 @@ fun PodcastList(modifier: Modifier = Modifier, podcasts: List<Podcast>) {
 }
 
 @Composable
-fun PodcastRow(modifier: Modifier = Modifier, podcast: Podcast) {
+private fun PodcastRow(modifier: Modifier = Modifier, podcast: Podcast) {
     Row(modifier = modifier.fillMaxWidth()) {
         // Null content description since the artwork is purely for visual purposes
         AsyncImage(model = podcast.imageUrl, contentDescription = null)
