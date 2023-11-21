@@ -5,8 +5,12 @@ import androidx.lifecycle.viewModelScope
 import com.stickebox.audiobooks_test.LoadPodcastsUseCase.LoadPodcastsResult.Failure
 import com.stickebox.audiobooks_test.LoadPodcastsUseCase.LoadPodcastsResult.Success
 import com.stickebox.audiobooks_test.models.Podcast
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
@@ -14,11 +18,12 @@ import org.koin.android.annotation.KoinViewModel
 @KoinViewModel
 class PodcastListScreenViewModel(
     private val loadPodcastsUseCase: LoadPodcastsUseCase,
+    private val database: Database
 ) : ViewModel() {
 
     private var currentPage = 0
 
-    private val podcasts = mutableListOf<Podcast>()
+//    private val podcasts = mutableListOf<Podcast>()
     private val _podcastUiState: MutableStateFlow<PodcastListUiState> =
         MutableStateFlow(PodcastListUiState.createInitialState())
     val podcastUiState = _podcastUiState.asStateFlow()
@@ -27,8 +32,9 @@ class PodcastListScreenViewModel(
         onLoadPodcasts()
     }
 
-    fun fetchPodcastById(id: String): Podcast? {
-        return podcasts.firstOrNull { it.id == id }
+    suspend fun fetchPodcastById(id: String): Flow<Podcast> {
+        return database.fetchPodcast(id)
+//        return podcasts.firstOrNull { it.id == id }
     }
 
     fun onFavouritePodcast(podcast: Podcast) {

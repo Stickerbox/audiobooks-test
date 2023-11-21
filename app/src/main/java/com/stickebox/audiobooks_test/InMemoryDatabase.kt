@@ -1,29 +1,28 @@
 package com.stickebox.audiobooks_test
 
 import com.stickebox.audiobooks_test.models.Podcast
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 
 /**
  * A local in-memory implementation of [Database].
  */
 class InMemoryDatabase : Database {
 
-    private val _podcasts: MutableSharedFlow<List<Podcast>> = MutableSharedFlow(0, 1)
-    override val podcasts: SharedFlow<List<Podcast>> = _podcasts.asSharedFlow()
+    private val _podcasts = MutableSharedFlow<MutableList<Podcast>>()
+    override val podcasts: Flow<List<Podcast>> = _podcasts
 
     /**
      * Saves the podcasts to a [StateFlow], mainly so that the [Podcast::isFavourite] state
      * can be flipped later on
      */
     override suspend fun save(podcasts: List<Podcast>) {
-        val mutableList = _podcasts.first().toMutableList()
-        mutableList.addAll(podcasts)
-
-        _podcasts.emit(mutableList.toList())
+        val currentList = _podcasts.first()
+        currentList.addAll(podcasts)
+        _podcasts.emit(currentList)
     }
 
     /**
@@ -33,13 +32,20 @@ class InMemoryDatabase : Database {
      * For a non-static API, this function could just save the results from an API request instead
      */
     override suspend fun updateFavouriteState(podcastId: String, isFavourite: Boolean) {
-        val mutableList = _podcasts.first().toMutableList()
-        val podcastToFavourite = mutableList.firstOrNull { it.id == podcastId } ?: return
+        val currentList = _podcasts.first()
+        val podcastToFavourite = currentList.firstOrNull { it.id == podcastId } ?: return
         val updatedPodcast = podcastToFavourite.copy(isFavourite = isFavourite)
-        val currentPosition = mutableList.indexOf(podcastToFavourite)
-        mutableList.remove(podcastToFavourite)
-        mutableList.add(currentPosition, updatedPodcast)
+        val currentPosition = currentList.indexOf(podcastToFavourite)
+        currentList.remove(podcastToFavourite)
+        currentList.add(currentPosition, updatedPodcast)
+        _podcasts.emit(currentList)
+    }
 
-        _podcasts.emit(mutableList.toList())
+    override fun fetchPodcast(id: PodcastId): Flow<Podcast> {
+        return podcasts.map {
+            it.first { podcast ->
+                podcast.id == id
+            }
+        }
     }
 }

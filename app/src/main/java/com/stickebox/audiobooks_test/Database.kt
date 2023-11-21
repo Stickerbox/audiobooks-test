@@ -29,4 +29,6 @@ interface Database {
      * @param isFavourite The new state of whether the podcast has been favourited
      */
     suspend fun updateFavouriteState(podcastId: String, isFavourite: Boolean)
+
+    fun fetchPodcast(id: PodcastId): Flow<Podcast>
 }

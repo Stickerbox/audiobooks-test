@@ -6,9 +6,11 @@ import com.stickebox.audiobooks_test.models.Podcast
  * Gets the next page of podcasts based on [PodcastPaginationState]
  *
  * @param repository The [PodcastRepository] from which to grab the next page
+ * @param database The [Database] instance to store the fetched podcasts
  */
 class LoadPodcastsUseCase(
     private val repository: PodcastRepository,
+    private val database: Database
 ) {
 
     /**
@@ -22,6 +24,7 @@ class LoadPodcastsUseCase(
     suspend fun execute(paginationState: PodcastPaginationState): LoadPodcastsResult {
         val result = repository.loadNextPage(paginationState)
         return if (result.isSuccess) {
+            database.save(result.getOrThrow())
             LoadPodcastsResult.Success(result.getOrThrow())
         } else {
             LoadPodcastsResult.Failure(result.exceptionOrNull())
