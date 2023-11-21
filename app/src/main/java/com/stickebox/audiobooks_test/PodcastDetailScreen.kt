@@ -22,33 +22,39 @@ import com.stickebox.audiobooks_test.ui.theme.ButtonPrimary
 @Composable
 fun PodcastDetailScreen(
     modifier: Modifier = Modifier,
-    onFavouritePodcast: () -> Unit,
-    podcast: Podcast
+    onFavouritePodcast: (Boolean) -> Unit,
+    uiState: PodcastDetailViewModel.PodcastDetailUiState
 ) {
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = podcast.name, style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
-        Text(text = podcast.publisher)
+        Text(
+            text = uiState.title,
+            style = MaterialTheme.typography.headlineMedium,
+            fontWeight = FontWeight.Bold
+        )
+        Text(text = uiState.publisher)
         AsyncImage(
-            model = podcast.imageUrl,
+            model = uiState.imageUrl,
             contentDescription = null,
             modifier = Modifier
                 .size(250.dp)
                 .clip(RoundedCornerShape(24.dp))
         )
         Button(
-            onClick = onFavouritePodcast,
+            onClick = {
+                onFavouritePodcast(!uiState.isFavourite)
+            },
             colors = ButtonDefaults.buttonColors(containerColor = ButtonPrimary)
         ) {
-            val text = if (!podcast.isFavourite) {
+            val text = if (!uiState.isFavourite) {
                 "Favourite"
             } else {
                 "Unfavourite"
             }
             Text(text = text)
         }
-        Text(text = podcast.description)
+        Text(text = uiState.description)
     }
 }

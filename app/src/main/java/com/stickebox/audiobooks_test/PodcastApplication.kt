@@ -22,11 +22,12 @@ private val networkModule = module {
     single<Database> { InMemoryDatabase() }
     single { PodcastRepository(get()) }
 
-    factory { LoadPodcastsUseCase(get()) }
+    factory { LoadPodcastsUseCase(get(), get()) }
 }
 
 private val viewModelModule = module {
-    viewModel { PodcastListScreenViewModel(get()) }
+    viewModel { PodcastListScreenViewModel(get(), get()) }
+    viewModel { PodcastDetailViewModel(get(), get()) }
 }
 
 class PodcastApplication : Application() {

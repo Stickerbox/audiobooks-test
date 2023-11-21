@@ -3,6 +3,7 @@ package com.stickebox.audiobooks_test
 import com.stickebox.audiobooks_test.models.Podcast
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -12,7 +13,7 @@ import kotlinx.coroutines.flow.map
  */
 class InMemoryDatabase : Database {
 
-    private val _podcasts = MutableSharedFlow<MutableList<Podcast>>()
+    private val _podcasts = MutableStateFlow<MutableList<Podcast>>(mutableListOf())
     override val podcasts: Flow<List<Podcast>> = _podcasts
 
     /**
@@ -20,7 +21,7 @@ class InMemoryDatabase : Database {
      * can be flipped later on
      */
     override suspend fun save(podcasts: List<Podcast>) {
-        val currentList = _podcasts.first()
+        val currentList = _podcasts.value
         currentList.addAll(podcasts)
         _podcasts.emit(currentList)
     }

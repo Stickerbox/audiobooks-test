@@ -1,19 +1,75 @@
 package com.stickebox.audiobooks_test
 
+import androidx.compose.ui.text.AnnotatedString
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.stickebox.audiobooks_test.LoadPodcastsUseCase.LoadPodcastsResult.Failure
 import com.stickebox.audiobooks_test.LoadPodcastsUseCase.LoadPodcastsResult.Success
 import com.stickebox.audiobooks_test.models.Podcast
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.transformLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
+
+@KoinViewModel
+class PodcastDetailViewModel(
+    private val podcastId: String,
+    private val database: Database
+) : ViewModel() {
+
+    val podcastDetailUiState = database.fetchPodcast(podcastId)
+        .distinctUntilChanged()
+        .map {  podcast ->
+            PodcastDetailUiState(
+                title = podcast.name,
+                publisher = podcast.publisher,
+                imageUrl = podcast.imageUrl,
+                isFavourite = podcast.isFavourite,
+                description = podcast.description
+            )
+        }
+        .stateIn(
+            viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = PodcastDetailUiState.createInitialState()
+        )
+
+    fun onFavouritePodcast(isFavourite: Boolean) {
+        viewModelScope.launch {
+            database.updateFavouriteState(podcastId = podcastId, isFavourite = isFavourite)
+        }
+    }
+
+    data class PodcastDetailUiState(
+        val title: String,
+        val publisher: String,
+        val imageUrl: String,
+        val isFavourite: Boolean,
+        val description: AnnotatedString,
+    ) {
+        companion object {
+            fun createInitialState(): PodcastDetailUiState {
+                return PodcastDetailUiState(
+                    "",
+                    "",
+                    "",
+                    false,
+                    AnnotatedString("")
+                )
+            }
+        }
+    }
+}
 
 @KoinViewModel
 class PodcastListScreenViewModel(
@@ -23,29 +79,21 @@ class PodcastListScreenViewModel(
 
     private var currentPage = 0
 
-//    private val podcasts = mutableListOf<Podcast>()
     private val _podcastUiState: MutableStateFlow<PodcastListUiState> =
         MutableStateFlow(PodcastListUiState.createInitialState())
     val podcastUiState = _podcastUiState.asStateFlow()
 
     init {
-        onLoadPodcasts()
-    }
-
-    suspend fun fetchPodcastById(id: String): Flow<Podcast> {
-        return database.fetchPodcast(id)
-//        return podcasts.firstOrNull { it.id == id }
-    }
-
-    fun onFavouritePodcast(podcast: Podcast) {
-        _podcastUiState.update { state ->
-            val position = podcasts.indexOf(podcast)
-            podcasts[position] =
-                podcasts[position].copy(isFavourite = !podcasts[position].isFavourite)
-            state.copy(
-                podcasts = podcasts
-            )
+        viewModelScope.launch {
+            database.podcasts
+                .map { podcasts ->
+                    _podcastUiState.update {
+                        it.copy(podcasts = podcasts)
+                    }
+                }
+                .collect()
         }
+        onLoadPodcasts()
     }
 
     fun onLoadPodcasts() {
@@ -54,23 +102,21 @@ class PodcastListScreenViewModel(
         }
 
         viewModelScope.launch {
-            when (val podcastResult = loadPodcastsUseCase.execute(PodcastPaginationState(page = currentPage + 1))) {
+            when (val podcastResult =
+                loadPodcastsUseCase.execute(PodcastPaginationState(page = currentPage + 1))) {
                 is Success -> {
                     // On success, update the current page. Done here so that if there's a failure,
                     // we can maintain the previous state
                     currentPage += 1
+                    database.save(podcastResult.result)
                     _podcastUiState.update { state ->
-                        podcasts.addAll(podcastResult.result)
-                        state.copy(
-                            podcasts = podcasts,
-                            isLoading = false
-                        )
+                        state.copy(isLoading = false)
                     }
                 }
 
                 is Failure -> {
-                    _podcastUiState.update {
-                        it.copy(isLoading = false)
+                    _podcastUiState.update { state ->
+                        state.copy(isLoading = false)
                     }
                 }
             }

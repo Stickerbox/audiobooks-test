@@ -17,7 +17,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.stickebox.audiobooks_test.ui.theme.AudiobookstestTheme
+import kotlinx.coroutines.flow.collect
+import org.koin.androidx.compose.getViewModel
 import org.koin.androidx.compose.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,13 +37,12 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     Box {
-                        val viewModel = koinViewModel<PodcastListScreenViewModel>()
-
                         NavHost(
                             navController = navController,
                             startDestination = Screens.List.routeName
                         ) {
                             composable(Screens.List.routeName) {
+                                val viewModel = koinViewModel<PodcastListScreenViewModel>()
                                 val uiState by viewModel.podcastUiState.collectAsState()
 
                                 PodcastListScreen(
@@ -63,11 +65,12 @@ class MainActivity : ComponentActivity() {
                             ) { backstack ->
                                 val podcastId =
                                     backstack.arguments?.getString(Screens.Detail.podcastId)
-                                val podcast = viewModel.fetchPodcastById(podcastId ?: "")!!
+                                val viewModel = getViewModel<PodcastDetailViewModel>(parameters = { parametersOf(podcastId) })
+                                val uiState by viewModel.podcastDetailUiState.collectAsState()
                                 PodcastDetailScreen(
                                     modifier = Modifier.fillMaxSize(),
-                                    onFavouritePodcast = { viewModel.onFavouritePodcast(podcast) },
-                                    podcast = podcast
+                                    onFavouritePodcast = { viewModel.onFavouritePodcast(it) },
+                                    uiState = uiState
                                 )
                             }
                         }
