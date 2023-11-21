@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">audiobooks-test</string>
     <string name="podcasts_title">Podcasts</string>
+    <string name="podcast_list_favourited">Favourited</string>
 </resources>

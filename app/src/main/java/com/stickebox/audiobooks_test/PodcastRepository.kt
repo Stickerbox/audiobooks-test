@@ -6,7 +6,6 @@ import com.stickebox.audiobooks_test.network.models.toDomainModel
 
 class PodcastRepository(
     private val apiService: PodcastApiService,
-    private val database: Database
 ) {
 
     suspend fun loadNextPage(nextState: PodcastPaginationState): Result<List<Podcast>> {

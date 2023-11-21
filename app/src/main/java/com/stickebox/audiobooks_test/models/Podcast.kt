@@ -9,6 +9,7 @@ package com.stickebox.audiobooks_test.models
  * @param isFavourite Whether the user has favourited this podcast
  * @param imageUrl The URL of the podcast's image to be remotely loaded
  * @param thumbnailImageUrl The thumbnail URL of the podcast's image to be remotely loaded
+ * @param publisher The name of the podcast's publisher
  */
 data class Podcast(
     val id: String,
@@ -17,4 +18,5 @@ data class Podcast(
     val isFavourite: Boolean,
     val imageUrl: String,
     val thumbnailImageUrl: String,
+    val publisher: String,
 )

@@ -20,7 +20,7 @@ private val networkModule = module {
     single { retrofit.create(PodcastApiService::class.java) }
 
     single<Database> { InMemoryDatabase() }
-    single { PodcastRepository(get(), get()) }
+    single { PodcastRepository(get()) }
 
     factory { LoadPodcastsUseCase(get()) }
 }

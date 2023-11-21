@@ -27,6 +27,7 @@ fun PodcastResponse.toDomainModel(isFavourite: Boolean = false): Podcast {
         name = title,
         description = description,
         thumbnailImageUrl = thumbnailImage,
-        isFavourite = isFavourite
+        isFavourite = isFavourite,
+        publisher = publisher
     )
 }
