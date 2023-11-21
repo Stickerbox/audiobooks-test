@@ -1,16 +1,10 @@
 package com.stickebox.audiobooks_test
 
-import android.graphics.Typeface
-import android.text.Spanned
-import android.text.style.ForegroundColorSpan
-import android.text.style.StyleSpan
-import android.text.style.UnderlineSpan
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -27,22 +21,17 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextDecoration
-import androidx.core.text.HtmlCompat
+
+internal typealias PodcastId = String
 
 @Composable
 fun PodcastListScreen(
     modifier: Modifier = Modifier,
     uiState: PodcastListScreenViewModel.PodcastListUiState,
-    onEndOfList: () -> Unit
+    onEndOfList: () -> Unit,
+    onPodcastClicked: (PodcastId) -> Unit
 ) {
     Column(modifier = modifier) {
         Text(
@@ -51,7 +40,7 @@ fun PodcastListScreen(
             style = MaterialTheme.typography.headlineSmall,
             fontWeight = FontWeight.Black
         )
-        PodcastList(podcasts = uiState.podcasts, onEndOfList = onEndOfList)
+        PodcastList(podcasts = uiState.podcasts, onEndOfList = onEndOfList, onPodcastClicked = onPodcastClicked)
     }
 }
 
@@ -59,7 +48,8 @@ fun PodcastListScreen(
 private fun PodcastList(
     modifier: Modifier = Modifier,
     podcasts: List<Podcast>,
-    onEndOfList: () -> Unit
+    onEndOfList: () -> Unit,
+    onPodcastClicked: (PodcastId) -> Unit
 ) {
     val lazyListState = rememberLazyListState()
     if (!lazyListState.canScrollForward) {
@@ -70,7 +60,7 @@ private fun PodcastList(
         items(podcasts) { podcast ->
             key(podcast.id) {
                 PodcastRow(podcast = podcast, onPodcastClicked = {
-
+                    onPodcastClicked(it)
                 })
                 Divider(
                     color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.1f),
@@ -82,10 +72,14 @@ private fun PodcastList(
 }
 
 @Composable
-private fun PodcastRow(modifier: Modifier = Modifier, podcast: Podcast, onPodcastClicked: () -> Unit) {
+private fun PodcastRow(
+    modifier: Modifier = Modifier,
+    podcast: Podcast,
+    onPodcastClicked: (PodcastId) -> Unit
+) {
     Row(
         modifier = modifier
-            .clickable { onPodcastClicked() }
+            .clickable { onPodcastClicked(podcast.id) }
             .fillMaxWidth()
             .padding(16.dp)
     ) {
@@ -109,44 +103,6 @@ private fun PodcastRow(modifier: Modifier = Modifier, podcast: Podcast, onPodcas
             if (podcast.isFavourite) {
                 Text(text = stringResource(R.string.podcast_list_favourited))
             }
-        }
-    }
-}
-
-/**
- * Converts a [Spanned] into an [AnnotatedString] trying to keep as much formatting as possible.
- *
- * Currently supports `bold`, `italic`, `underline` and `color`.
- */
-fun Spanned.toAnnotatedString(): AnnotatedString = buildAnnotatedString {
-    val spanned = this@toAnnotatedString
-    append(spanned.toString())
-    getSpans(0, spanned.length, Any::class.java).forEach { span ->
-        val start = getSpanStart(span)
-        val end = getSpanEnd(span)
-        when (span) {
-            is StyleSpan -> when (span.style) {
-                Typeface.BOLD -> addStyle(SpanStyle(fontWeight = FontWeight.Bold), start, end)
-                Typeface.ITALIC -> addStyle(SpanStyle(fontStyle = FontStyle.Italic), start, end)
-                Typeface.BOLD_ITALIC -> addStyle(
-                    SpanStyle(
-                        fontWeight = FontWeight.Bold,
-                        fontStyle = FontStyle.Italic
-                    ), start, end
-                )
-            }
-
-            is UnderlineSpan -> addStyle(
-                SpanStyle(textDecoration = TextDecoration.Underline),
-                start,
-                end
-            )
-
-            is ForegroundColorSpan -> addStyle(
-                SpanStyle(color = Color(span.foregroundColor)),
-                start,
-                end
-            )
         }
     }
 }

@@ -1,5 +1,7 @@
 package com.stickebox.audiobooks_test.models
 
+import androidx.compose.ui.text.AnnotatedString
+
 /**
  * Domain model for a podcast
  *
@@ -14,7 +16,7 @@ package com.stickebox.audiobooks_test.models
 data class Podcast(
     val id: String,
     val name: String,
-    val description: String,
+    val description: AnnotatedString,
     val isFavourite: Boolean,
     val imageUrl: String,
     val thumbnailImageUrl: String,

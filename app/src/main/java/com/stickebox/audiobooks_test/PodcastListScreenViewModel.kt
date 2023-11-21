@@ -18,6 +18,7 @@ class PodcastListScreenViewModel(
 
     private var currentPage = 0
 
+    private val podcasts = mutableListOf<Podcast>()
     private val _podcastUiState: MutableStateFlow<PodcastListUiState> =
         MutableStateFlow(PodcastListUiState.createInitialState())
     val podcastUiState = _podcastUiState.asStateFlow()
@@ -26,13 +27,17 @@ class PodcastListScreenViewModel(
         onLoadPodcasts()
     }
 
-    fun onFavouritePodcast(position: Int) {
+    fun fetchPodcastById(id: String): Podcast? {
+        return podcasts.firstOrNull { it.id == id }
+    }
+
+    fun onFavouritePodcast(podcast: Podcast) {
         _podcastUiState.update { state ->
-            val currentList = state.podcasts.toMutableList()
-            currentList[position] =
-                currentList[position].copy(isFavourite = !currentList[position].isFavourite)
+            val position = podcasts.indexOf(podcast)
+            podcasts[position] =
+                podcasts[position].copy(isFavourite = !podcasts[position].isFavourite)
             state.copy(
-                podcasts = currentList
+                podcasts = podcasts
             )
         }
     }
@@ -49,10 +54,9 @@ class PodcastListScreenViewModel(
                     // we can maintain the previous state
                     currentPage += 1
                     _podcastUiState.update { state ->
-                        val currentList = state.podcasts.toMutableList()
-                        currentList.addAll(podcastResult.result)
+                        podcasts.addAll(podcastResult.result)
                         state.copy(
-                            podcasts = currentList,
+                            podcasts = podcasts,
                             isLoading = false
                         )
                     }

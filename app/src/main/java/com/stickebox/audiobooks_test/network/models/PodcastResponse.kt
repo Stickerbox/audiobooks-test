@@ -1,8 +1,11 @@
 package com.stickebox.audiobooks_test.network.models
 
+import androidx.core.text.HtmlCompat
+import androidx.core.text.toSpanned
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import com.stickebox.audiobooks_test.models.Podcast
+import com.stickebox.audiobooks_test.utils.toAnnotatedString
 
 @JsonClass(generateAdapter = true)
 data class PodcastResponse(
@@ -25,7 +28,7 @@ fun PodcastResponse.toDomainModel(isFavourite: Boolean = false): Podcast {
         id = id,
         imageUrl = image,
         name = title,
-        description = description,
+        description = HtmlCompat.fromHtml(description, HtmlCompat.FROM_HTML_MODE_COMPACT).toAnnotatedString(),
         thumbnailImageUrl = thumbnailImage,
         isFavourite = isFavourite,
         publisher = publisher
