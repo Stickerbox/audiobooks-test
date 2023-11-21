@@ -16,7 +16,7 @@ data class PodcastResponse(
     val publisher: String,
     @Json(name = "thumbnail")
     val thumbnailImage: String,
-    @Json(name = "thumbnail")
+    @Json(name = "description")
     val description: String,
 )
 

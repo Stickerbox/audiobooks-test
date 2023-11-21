@@ -14,18 +14,28 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.stickebox.audiobooks_test.models.Podcast
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 
 @Composable
-fun PodcastListScreen(modifier: Modifier = Modifier, podcasts: List<Podcast>) {
-    Column {
+fun PodcastListScreen(
+    modifier: Modifier = Modifier,
+    uiState: PodcastListScreenViewModel.PodcastListUiState,
+    onEndOfList: () -> Unit
+) {
+    Column(modifier = modifier) {
         Text(text = stringResource(R.string.podcasts_title))
-        PodcastList(podcasts = podcasts)
+        PodcastList(podcasts = uiState.podcasts, onEndOfList = onEndOfList)
     }
 }
 
 @Composable
-private fun PodcastList(modifier: Modifier = Modifier, podcasts: List<Podcast>) {
-    LazyColumn(modifier = modifier) {
+private fun PodcastList(modifier: Modifier = Modifier, podcasts: List<Podcast>, onEndOfList: () -> Unit) {
+    val lazyListState = rememberLazyListState()
+    if (!lazyListState.canScrollForward) {
+        onEndOfList()
+    }
+
+    LazyColumn(modifier = modifier, state = lazyListState) {
         items(podcasts) { podcast ->
             key(podcast.id) {
                 PodcastRow(podcast = podcast)
