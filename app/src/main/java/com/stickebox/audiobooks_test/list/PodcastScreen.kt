@@ -1,9 +1,11 @@
 package com.stickebox.audiobooks_test.list
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -19,8 +21,10 @@ import com.stickebox.audiobooks_test.models.Podcast
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import com.stickebox.audiobooks_test.R
@@ -34,14 +38,24 @@ fun PodcastListScreen(
     onEndOfList: () -> Unit,
     onPodcastClicked: (PodcastId) -> Unit
 ) {
-    Column(modifier = modifier) {
-        Text(
-            text = stringResource(R.string.podcasts_title),
-            modifier = Modifier.padding(16.dp),
-            style = MaterialTheme.typography.headlineSmall,
-            fontWeight = FontWeight.Black
-        )
-        PodcastList(podcasts = uiState.podcasts, onEndOfList = onEndOfList, onPodcastClicked = onPodcastClicked)
+    Box(modifier = modifier) {
+        Column {
+            Text(
+                text = stringResource(R.string.podcasts_title),
+                modifier = Modifier.padding(16.dp),
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.Black
+            )
+            PodcastList(
+                podcasts = uiState.podcasts,
+                onEndOfList = onEndOfList,
+                onPodcastClicked = onPodcastClicked
+            )
+        }
+
+        if (uiState.isLoading) {
+            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+        }
     }
 }
 

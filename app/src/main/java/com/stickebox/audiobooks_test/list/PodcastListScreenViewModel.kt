@@ -44,8 +44,7 @@ class PodcastListScreenViewModel(
         }
 
         viewModelScope.launch {
-            when (val podcastResult =
-                loadPodcastsUseCase.execute(PodcastPaginationState(page = currentPage + 1))) {
+            when (loadPodcastsUseCase.execute(PodcastPaginationState(page = currentPage + 1))) {
                 is Success -> {
                     // On success, update the current page. Done here so that if there's a failure,
                     // we can maintain the previous state
