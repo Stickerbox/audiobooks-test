@@ -1,8 +1,6 @@
 package com.stickebox.audiobooks_test.detail
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -56,14 +54,14 @@ fun PodcastDetailScreen(
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center
             )
-            Spacer(modifier = Modifier.height(8.dp))
+            SmallSpacer()
             Text(
                 text = uiState.publisher,
                 style = MaterialTheme.typography.labelLarge,
                 fontStyle = FontStyle.Italic,
                 modifier = Modifier.alpha(0.5f)
             )
-            Spacer(modifier = Modifier.height(20.dp))
+            LargeSpacer()
             AsyncImage(
                 model = uiState.imageUrl,
                 contentDescription = null,
@@ -71,7 +69,7 @@ fun PodcastDetailScreen(
                     .size(250.dp)
                     .clip(RoundedCornerShape(24.dp))
             )
-            Spacer(modifier = Modifier.height(8.dp))
+            SmallSpacer()
             Button(
                 onClick = {
                     onFavouritePodcast(!uiState.isFavourite)
@@ -85,7 +83,7 @@ fun PodcastDetailScreen(
                 }
                 Text(text = text)
             }
-            Spacer(modifier = Modifier.height(20.dp))
+            LargeSpacer()
             Text(
                 text = uiState.description,
                 textAlign = TextAlign.Center,
@@ -94,4 +92,14 @@ fun PodcastDetailScreen(
             )
         }
     }
+}
+
+@Composable
+private fun SmallSpacer() {
+    Spacer(modifier = Modifier.height(8.dp))
+}
+
+@Composable
+private fun LargeSpacer() {
+    Spacer(modifier = Modifier.height(20.dp))
 }
