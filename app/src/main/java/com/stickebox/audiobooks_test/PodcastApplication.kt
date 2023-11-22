@@ -21,13 +21,18 @@ private val networkModule = module {
 
     single<Database> { InMemoryDatabase() }
     single { PodcastRepository(get()) }
+}
 
+private val useCaseModule = module {
     factory { LoadPodcastsUseCase(get(), get()) }
+    factory { FavouritePodcastUseCase(get()) }
+    factory { GetPodcastUseCase(get()) }
+    factory { GetAllPodcastsUseCase(get()) }
 }
 
 private val viewModelModule = module {
     viewModel { PodcastListScreenViewModel(get(), get()) }
-    viewModel { PodcastDetailViewModel(get(), get()) }
+    viewModel { PodcastDetailViewModel(get(), get(), get()) }
 }
 
 class PodcastApplication : Application() {
@@ -37,7 +42,7 @@ class PodcastApplication : Application() {
 
         startKoin {
             androidContext(this@PodcastApplication)
-            modules(networkModule, viewModelModule)
+            modules(networkModule, viewModelModule, useCaseModule)
         }
     }
 }

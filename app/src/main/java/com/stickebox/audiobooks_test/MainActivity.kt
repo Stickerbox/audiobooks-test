@@ -2,6 +2,7 @@ package com.stickebox.audiobooks_test
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -64,12 +65,19 @@ class MainActivity : ComponentActivity() {
                             ) { backstack ->
                                 val podcastId =
                                     backstack.arguments?.getString(Screens.Detail.podcastId)
-                                val viewModel = getViewModel<PodcastDetailViewModel>(parameters = { parametersOf(podcastId) })
+                                val viewModel = getViewModel<PodcastDetailViewModel>(parameters = {
+                                    parametersOf(podcastId)
+                                })
                                 val uiState by viewModel.podcastDetailUiState.collectAsState()
                                 PodcastDetailScreen(
                                     modifier = Modifier.fillMaxSize(),
-                                    onFavouritePodcast = { viewModel.onFavouritePodcast(it) },
-                                    uiState = uiState
+                                    onFavouritePodcast = { isFavourite ->
+                                        viewModel.onFavouritePodcast(isFavourite)
+                                    },
+                                    uiState = uiState,
+                                    onBackPressed = {
+                                        navController.popBackStack()
+                                    }
                                 )
                             }
                         }

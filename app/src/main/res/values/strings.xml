@@ -2,4 +2,7 @@
     <string name="app_name">audiobooks-test</string>
     <string name="podcasts_title">Podcasts</string>
     <string name="podcast_list_favourited">Favourited</string>
+    <string name="podcast_detail_favourite">Favourite</string>
+    <string name="podcast_detail_unfavourite">Unfavourite</string>
+    <string name="podcast_details_back">Back</string>
 </resources>
