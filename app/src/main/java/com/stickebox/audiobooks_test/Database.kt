@@ -30,5 +30,12 @@ interface Database {
      */
     suspend fun updateFavouriteState(podcastId: String, isFavourite: Boolean)
 
+    /**
+     * Fetches a Flow of a specific [Podcast] by its ID
+     *
+     * @param id The String id of the podcast
+     *
+     * @return A Flow of [Podcast] as it changes over time
+     */
     fun fetchPodcast(id: PodcastId): Flow<Podcast>
 }

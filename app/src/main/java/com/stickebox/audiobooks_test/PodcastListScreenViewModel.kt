@@ -13,7 +13,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.transformLatest
@@ -86,12 +88,11 @@ class PodcastListScreenViewModel(
     init {
         viewModelScope.launch {
             database.podcasts
-                .map { podcasts ->
+                .collectLatest { podcasts ->
                     _podcastUiState.update {
                         it.copy(podcasts = podcasts)
                     }
                 }
-                .collect()
         }
         onLoadPodcasts()
     }
@@ -108,7 +109,6 @@ class PodcastListScreenViewModel(
                     // On success, update the current page. Done here so that if there's a failure,
                     // we can maintain the previous state
                     currentPage += 1
-                    database.save(podcastResult.result)
                     _podcastUiState.update { state ->
                         state.copy(isLoading = false)
                     }
