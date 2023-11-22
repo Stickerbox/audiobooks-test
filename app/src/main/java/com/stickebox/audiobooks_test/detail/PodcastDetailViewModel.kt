@@ -1,8 +1,10 @@
-package com.stickebox.audiobooks_test
+package com.stickebox.audiobooks_test.detail
 
 import androidx.compose.ui.text.AnnotatedString
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.stickebox.audiobooks_test.usecase.FavouritePodcastUseCase
+import com.stickebox.audiobooks_test.usecase.GetPodcastUseCase
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn

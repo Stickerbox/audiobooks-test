@@ -1,5 +1,6 @@
-package com.stickebox.audiobooks_test
+package com.stickebox.audiobooks_test.persistence
 
+import com.stickebox.audiobooks_test.list.PodcastPaginationState
 import com.stickebox.audiobooks_test.models.Podcast
 import com.stickebox.audiobooks_test.network.PodcastApiService
 import com.stickebox.audiobooks_test.network.models.toDomainModel

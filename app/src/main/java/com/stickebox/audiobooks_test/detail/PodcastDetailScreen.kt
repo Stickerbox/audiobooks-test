@@ -1,4 +1,4 @@
-package com.stickebox.audiobooks_test
+package com.stickebox.audiobooks_test.detail
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -22,6 +22,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.stickebox.audiobooks_test.R
 import com.stickebox.audiobooks_test.ui.theme.ButtonPrimary
 
 @Composable

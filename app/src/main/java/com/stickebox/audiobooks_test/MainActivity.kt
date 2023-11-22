@@ -2,7 +2,6 @@ package com.stickebox.audiobooks_test
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
-import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,14 +10,16 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.core.view.WindowCompat
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.stickebox.audiobooks_test.detail.PodcastDetailScreen
+import com.stickebox.audiobooks_test.detail.PodcastDetailViewModel
+import com.stickebox.audiobooks_test.list.PodcastListScreen
+import com.stickebox.audiobooks_test.list.PodcastListScreenViewModel
 import com.stickebox.audiobooks_test.ui.theme.AudiobookstestTheme
-import kotlinx.coroutines.flow.collect
 import org.koin.androidx.compose.getViewModel
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf

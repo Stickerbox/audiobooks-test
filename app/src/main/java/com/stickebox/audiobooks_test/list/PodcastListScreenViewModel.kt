@@ -1,10 +1,12 @@
-package com.stickebox.audiobooks_test
+package com.stickebox.audiobooks_test.list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.stickebox.audiobooks_test.LoadPodcastsUseCase.LoadPodcastsResult.Failure
-import com.stickebox.audiobooks_test.LoadPodcastsUseCase.LoadPodcastsResult.Success
+import com.stickebox.audiobooks_test.usecase.LoadPodcastsUseCase.LoadPodcastsResult.Failure
+import com.stickebox.audiobooks_test.usecase.LoadPodcastsUseCase.LoadPodcastsResult.Success
 import com.stickebox.audiobooks_test.models.Podcast
+import com.stickebox.audiobooks_test.usecase.GetAllPodcastsUseCase
+import com.stickebox.audiobooks_test.usecase.LoadPodcastsUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest

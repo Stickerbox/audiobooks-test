@@ -1,4 +1,7 @@
-package com.stickebox.audiobooks_test
+package com.stickebox.audiobooks_test.usecase
+
+import com.stickebox.audiobooks_test.list.PodcastId
+import com.stickebox.audiobooks_test.persistence.Database
 
 /**
  * Updates the favourite state of a Podcast
